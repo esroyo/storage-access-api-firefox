@@ -7,6 +7,8 @@
   </head>
   <body>
     <button id="checkButton" disabled>Check permission</button>
+    <hr />
+    Log:
     <pre id="logContainer"></pre>
     <script>
 const logs = [];
@@ -16,13 +18,14 @@ const log = (...args) => {
       .map((value) => (typeof value === 'string' ? value : JSON.stringify(value)))
       .join(' ')
   );
-  console.log(...args);
+  console.log(`${performance.now()}:`, ...args);
 };
 const print = () => {
-  logContainer.textContent = logs.join('\n'); 
+  logContainer.textContent = logs.join('> \n'); 
 };
 
 async function doThingsWithCookies() {
+  log('Horay! we can access cookies');
   log('document.cookie', document.cookie);
 }
 
@@ -37,7 +40,7 @@ async function handleCookieAccess() {
     checkButton.disabled = false;
     checkButton.addEventListener('click', () => {
       document.requestStorageAccess()
-        .then(doThingsWithCookies, doThingsWithCookies)
+        .then(doThingsWithCookies)
         .then(() => print());
     });
   } else if (permission.state === 'granted') {
@@ -45,6 +48,7 @@ async function handleCookieAccess() {
     log('According to docs (point 5): https://developer.mozilla.org/en-US/docs/Web/API/Storage_Access_API/Using#checking_and_requesting_storage_access');
     try {
       await document.requestStorageAccess();
+      doThingsWithCookies();
     } catch (err) {
       log('However it fails:', err);
       log('Is this a bug?');
