@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storage Access API demo - 3rd party HOST</title>
+  </head>
+  <body>
+    <button id="checkButton" disabled>Check permission</button>
+    <pre id="logContainer"></pre>
+    <script>
+const logs = [];
+const log = (...args) => {
+  logs.push(args.map((value) => typeof value === 'string' ? value : JSON.stringify(value))join(' '));
+  console.log(...args);
+};
+const print = () => {
+  logContainer.textContent = logs.join('\n'); 
+};
+
+async function doThingsWithCookies() {
+  log('document.cookie', document.cookie);
+}
+
+async function handleCookieAccess() {
+  const permission = await navigator.permissions.query({
+    name: 'storage-access',
+  });
+
+  log('permission query result', permission, permission.state);
+  if (permission.state === 'prompt') {
+    console.log('Need to call requestStorageAccess() after a user interaction');
+    checkButton.disabled = false;
+    checkButton.addEventListener('click', () => {
+      await document.requestStorageAccess().then(doThingsWithCookies, doThingsWithCookies);
+      print();
+    });
+  } else if (permission.state === 'granted') {
+    log('Should be possible to call requestStorageAccess() without user interaction...');
+    log('According to docs (point 5): https://developer.mozilla.org/en-US/docs/Web/API/Storage_Access_API/Using#checking_and_requesting_storage_access');
+    try {
+      await document.requestStorageAccess();
+    } catch (err) {
+      log('However it fails:', err);
+      log('Is this a bug?');
+    }
+    print();
+  }
+}
+
+handleCookieAccess();
+    </script>
+  </body>
+</html>
