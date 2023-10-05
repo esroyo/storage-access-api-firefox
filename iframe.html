@@ -22,7 +22,7 @@ const log = (...args) => {
   console.log(performance.now(), ...args);
 };
 const print = () => {
-  logContainer.textContent = logs.join('> \n'); 
+  logContainer.textContent = logs.join('\n'); 
 };
 
 async function doThingsWithCookies() {
