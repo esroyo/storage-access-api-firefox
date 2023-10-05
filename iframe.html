@@ -36,8 +36,9 @@ async function handleCookieAccess() {
     console.log('Need to call requestStorageAccess() after a user interaction');
     checkButton.disabled = false;
     checkButton.addEventListener('click', () => {
-      await document.requestStorageAccess().then(doThingsWithCookies, doThingsWithCookies);
-      print();
+      document.requestStorageAccess()
+        .then(doThingsWithCookies, doThingsWithCookies)
+        .then(() => print());
     });
   } else if (permission.state === 'granted') {
     log('Should be possible to call requestStorageAccess() without user interaction...');
