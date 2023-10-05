@@ -11,7 +11,11 @@
     <script>
 const logs = [];
 const log = (...args) => {
-  logs.push(args.map((value) => typeof value === 'string' ? value : JSON.stringify(value))join(' '));
+  logs.push(
+    args
+      .map((value) => (typeof value === 'string' ? value : JSON.stringify(value)))
+      .join(' ')
+  );
   console.log(...args);
 };
 const print = () => {
