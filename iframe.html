@@ -14,11 +14,12 @@
 const logs = [];
 const log = (...args) => {
   logs.push(
+    `${performance.now()}: ` +
     args
       .map((value) => (typeof value === 'string' ? value : JSON.stringify(value)))
       .join(' ')
   );
-  console.log(`${performance.now()}:`, ...args);
+  console.log(performance.now(), ...args);
 };
 const print = () => {
   logContainer.textContent = logs.join('> \n'); 
